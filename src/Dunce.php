@@ -8,8 +8,18 @@
 
 namespace Dunces;
 
+use Dunces\Console\Command;
+
+require_once dirname(__DIR__).'/src/Console/Command.php';
+
 
 class Dunce
 {
+    public function __construct()
+    {
+        (new Command)->run();
 
+    }
 }
+
+new Dunce();
