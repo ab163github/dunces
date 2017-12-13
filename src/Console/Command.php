@@ -10,6 +10,7 @@ namespace Dunces\Console;
 
 class Command
 {
+    private $dmdList;
     private $io;
     public function __construct()
     {
@@ -22,7 +23,7 @@ class Command
         //echo __METHOD__;
 //        $in = trim(fgets(STDIN));
 //        fwrite(STDOUT,$in);
-
-
+        $argv = $this->io->getArgv();
+        echo $argv[0];
     }
 }

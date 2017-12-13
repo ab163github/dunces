@@ -9,6 +9,7 @@
 namespace Dunces\Console;
 
 
+use Dunces\Console\Lib\CommandLine;
 use Dunces\Console\Lib\ICmdIo;
 
 class Io implements ICmdIo
@@ -16,6 +17,7 @@ class Io implements ICmdIo
     private $pwd;
     private $fullArgv;
     private $argv;
+    private $opts;
 
     public function __construct($argv = null)
     {
@@ -24,13 +26,31 @@ class Io implements ICmdIo
         }
         $this->pwd = getcwd();
         $this->fullArgv = implode(' ', $argv);
-        $this->argv = array_shift($argv);
+        $argvs = array();
+        $opts = array();
+        foreach (CommandLine::parseArgs($argv) as $k=>$v){
+            if(is_int($k)){
+                $argvs[$k] = $v;
+            }else{
+                $opts[$k] = $v;
+            }
+        }
+        $this->argv = $argvs;
+        $this->opts = $opts;
+    }
 
-        // 解析参数和选项
-        list($this->args, $this->sOpts, $this->lOpts) = CommandParser::parse($argv);
-        $this->command = isset($this->args[0]) ? array_shift($this->args) : null;
-        var_dump($this->args);
-        var_dump($this->sOpts);
-        var_dump($this->lOpts);
+    public function getOriginalCmmandLine()
+    {
+        return 'php '.$this->fullArgv;
+    }
+
+    public function getOpts()
+    {
+        return $this->opts;
+    }
+
+    public function getArgv()
+    {
+        return $this->argv;
     }
 }
