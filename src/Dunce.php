@@ -10,16 +10,14 @@ namespace Dunces;
 
 use Dunces\Console\Command;
 
-require_once dirname(__DIR__).'/src/Console/Command.php';
-
-
 class Dunce
 {
-    public function __construct()
+    public function __construct($runtime=null)
     {
-        (new Command)->run();
+        if($runtime === 'CLI')
+            (new Command)->run();
+        else
+            echo $runtime;
 
     }
 }
-
-new Dunce();

@@ -8,14 +8,14 @@
 
 namespace Dunces\Console;
 
-
 class Command
 {
-
+    private $io;
     public function __construct()
     {
-
+        $this->io = new Io();
     }
+
 
     public function run()
     {
