@@ -11,5 +11,5 @@ namespace Dunces\Console\Lib;
 
 interface ICommand
 {
-
+    public function execute(ICmdIo $io);
 }

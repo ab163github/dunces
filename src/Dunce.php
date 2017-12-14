@@ -12,12 +12,8 @@ use Dunces\Console\Command;
 
 class Dunce
 {
-    public function __construct($runtime=null)
+    public function __construct($settings = array())
     {
-        if($runtime === 'CLI')
-            (new Command)->run();
-        else
-            echo $runtime;
-
+        (new Command)->run($settings);
     }
 }

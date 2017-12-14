@@ -16,6 +16,8 @@ class Io implements ICmdIo
 {
     private $pwd;
     private $fullArgv;
+    private $scriptName;
+    private $command;
     private $argv;
     private $opts;
 
@@ -32,9 +34,13 @@ class Io implements ICmdIo
             if(is_int($k)){
                 $argvs[$k] = $v;
             }else{
-                $opts[$k] = $v;
+                if($k==='fileName')
+                    $this->scriptName = $v;
+                else
+                    $opts[$k] = $v;
             }
         }
+        $this->command = array_shift($argvs);
         $this->argv = $argvs;
         $this->opts = $opts;
     }
@@ -42,6 +48,16 @@ class Io implements ICmdIo
     public function getOriginalCmmandLine()
     {
         return 'php '.$this->fullArgv;
+    }
+
+    public function getScriptName()
+    {
+        return $this->scriptName;
+    }
+
+    public function getCommand()
+    {
+        return $this->command;
     }
 
     public function getOpts()

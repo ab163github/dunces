@@ -8,22 +8,43 @@
 
 namespace Dunces\Console;
 
-class Command
+use Dunces\Console\Lib\CmdSet;
+
+final class Command
 {
-    private $dmdList;
+    private $defaultCommand = 'info';
+    private $defaultCmdGroup = 'default';
+    private $defaultCmdNamespace = 'Dunces\Console\Cmd';
+    private $cmdSet;
     private $io;
+
+    private function loadCmdList($nameSpace){
+
+    }
+
     public function __construct()
     {
         $this->io = new Io();
+        $this->cmdSet = CmdSet::getSet();
     }
 
 
-    public function run()
+    public function run($settings=array())
     {
+        $this->cmdSet->cmdLoader(array($this->defaultCmdNamespace)); //TODO 加载命令行
+
         //echo __METHOD__;
 //        $in = trim(fgets(STDIN));
 //        fwrite(STDOUT,$in);
-        $argv = $this->io->getArgv();
-        echo $argv[0];
+//        if($settings['cmd']['namespaces']){
+//
+//        }
+
+
+//        $currentCommand = $this->io->getCommand()?$this->io->getCommand():$this->defaultCommand;
+//        echo $currentCommand;
+//        //echo $this->io->getScriptName();
+////        var_export($this->io->getArgv());
+////        var_export($this->io->getOpts());
     }
 }
