@@ -14,6 +14,6 @@ class Dunce
 {
     public function __construct($settings = array())
     {
-        (new Command)->run($settings);
+        (new Command($settings))->run();
     }
 }

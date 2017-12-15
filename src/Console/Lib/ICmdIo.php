@@ -11,5 +11,10 @@ namespace Dunces\Console\Lib;
 
 interface ICmdIo
 {
-
+    public function getOriginalCommandLine();
+    public function getScriptName();
+    public function getCommand();
+    public function getOpts();
+    public function getArgv();
+    public function outPutLine($msg,$newLine=true);
 }

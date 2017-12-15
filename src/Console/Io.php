@@ -21,11 +21,9 @@ class Io implements ICmdIo
     private $argv;
     private $opts;
 
-    public function __construct($argv = null)
+    public function __construct()
     {
-        if (null === $argv) {
-            $argv = $_SERVER['argv'];
-        }
+        $argv = $_SERVER['argv'];
         $this->pwd = getcwd();
         $this->fullArgv = implode(' ', $argv);
         $argvs = array();
@@ -45,7 +43,7 @@ class Io implements ICmdIo
         $this->opts = $opts;
     }
 
-    public function getOriginalCmmandLine()
+    public function getOriginalCommandLine()
     {
         return 'php '.$this->fullArgv;
     }
@@ -69,4 +67,11 @@ class Io implements ICmdIo
     {
         return $this->argv;
     }
+
+    public function outPutLine($msg,$newLine=true)
+    {
+        echo $msg;
+        if($newLine) echo PHP_EOL;
+    }
+
 }

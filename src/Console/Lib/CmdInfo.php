@@ -15,8 +15,11 @@ abstract class CmdInfo
     private $cmdGroupName;
 
     abstract protected function setList();
-    abstract protected function setGroupName();
 
+    protected function setGroupName()
+    {
+        return 'default';
+    }
 
     public function __construct()
     {

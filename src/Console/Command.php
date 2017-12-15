@@ -12,26 +12,45 @@ use Dunces\Console\Lib\CmdSet;
 
 final class Command
 {
-    private $defaultCommand = 'info';
-    private $defaultCmdGroup = 'default';
+
     private $defaultCmdNamespace = 'Dunces\Console\Cmd';
+
     private $cmdSet;
     private $io;
 
-    private function loadCmdList($nameSpace){
-
-    }
-
-    public function __construct()
+    public function __construct($settings=array())
     {
         $this->io = new Io();
-        $this->cmdSet = CmdSet::getSet();
+        if(isset($settings['CLI'])){
+            //TODO 加载命令行启动脚本指定的配置文件
+            $setting = $settings['CLI'];
+        }else{
+            $setting['namespaces'] = array($this->defaultCmdNamespace,'safsf\asdfa\ss');
+        }
+        $this->cmdSet = new CmdSet($setting['namespaces']);
     }
 
 
-    public function run($settings=array())
+    public function run()
     {
-        $this->cmdSet->cmdLoader(array($this->defaultCmdNamespace)); //TODO 加载命令行
+        $currentCmd = $this->io->getCommand();
+        $commandFname = $this->cmdSet->getCommandPath($currentCmd);
+        if($commandFname){
+            $cmd = new $commandFname;
+            try{
+                $cmd->execute($this->io);
+            }catch (\Exception $e){
+                if($e->getCode() !=0){
+                    $msg = $e->getMessage().PHP_EOL.$e->getTraceAsString();
+                }else{
+                    $msg = $e->getMessage();
+                }
+                exit($msg);
+            }
+        }else{
+            echo 'Can not find command: "'.$currentCmd.'" in command list.'.PHP_EOL;
+        }
+
 
         //echo __METHOD__;
 //        $in = trim(fgets(STDIN));

@@ -15,7 +15,6 @@ use Dunces\Console\Lib\ICommand;
 
 class Info extends CmdInfo implements ICommand
 {
-
     private function logo()
     {
         $logo = '
@@ -30,19 +29,15 @@ class Info extends CmdInfo implements ICommand
         return $logo;
     }
 
-    protected function setGroupName()
-    {
-        return 'default';
-    }
-
     protected function setList()
     {
-        return array('info');
+        return array('info'=>'Info');
     }
 
     public function execute(ICmdIo $io)
     {
-        echo $this->logo();
+        $io->outPutLine($this->logo());
+        throw new \Exception('');
     }
 
 //    public function desc()
