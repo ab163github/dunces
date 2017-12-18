@@ -6,10 +6,10 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Console\Lib;
+namespace Dunces\Lib;
 
 
-abstract class CmdInfo
+abstract class AbsCmdInfo
 {
     private $cmdList;
     private $cmdGroupName;

@@ -1,16 +1,17 @@
 <?php
 /**
- *
+ * Dunces console io
  * @author ab163github <ab__@163.com>
- * @version  0.0.0
+ * @version  0.0.1
  * @copyright Copyright ab163github. All rights reserved.
  */
 
 namespace Dunces\Console;
 
 
+use Dunces\Lib\ICmdIo;
 use Dunces\Console\Lib\CommandLine;
-use Dunces\Console\Lib\ICmdIo;
+
 
 class Io implements ICmdIo
 {

@@ -1,19 +1,22 @@
 <?php
 /**
- *
+ * Console default info
  * @author ab163github <ab__@163.com>
- * @version  0.0.0
+ * @version  0.0.1
  * @copyright Copyright ab163github. All rights reserved.
  */
 
 namespace Dunces\Console\Cmd;
 
 
-use Dunces\Console\Lib\CmdInfo;
-use Dunces\Console\Lib\ICmdIo;
-use Dunces\Console\Lib\ICommand;
 
-class Info extends CmdInfo implements ICommand
+
+use Dunces\Dunce;
+use Dunces\Lib\ICmdIo;
+use Dunces\Lib\ICommand;
+use Dunces\Lib\AbsCmdInfo;
+
+class Info extends AbsCmdInfo implements ICommand
 {
     private function logo()
     {
@@ -34,9 +37,13 @@ class Info extends CmdInfo implements ICommand
         return array('info'=>'Info');
     }
 
-    public function execute(ICmdIo $io)
+    public function execute(Dunce $dunce,ICmdIo $io)
     {
         $io->outPutLine($this->logo());
+        $versions= array();
+        array_push($versions,'Dunces verson: '.$dunce->getApp('Dunce')->version);
+        array_push($versions,'Console version: '.$dunce->getApp('Console')->version);
+        $io->outPutLine(implode(' ',$versions));
         throw new \Exception('');
     }
 

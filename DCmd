@@ -1,4 +1,4 @@
 #!/usr/bin/env php
 <?php
 require_once dirname(__DIR__).'/dunces/vendor/autoload.php';
-new \Dunces\Dunce();
+(new \Dunces\Dunce())->getApp('Console')->run();

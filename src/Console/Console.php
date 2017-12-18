@@ -1,35 +1,41 @@
 <?php
 /**
- *
+ * Dunce console
  * @author ab163github <ab__@163.com>
- * @version  0.0.0
+ * @version  0.0.1
  * @copyright Copyright ab163github. All rights reserved.
  */
 
 namespace Dunces\Console;
 
 use Dunces\Console\Lib\CmdSet;
+use Dunces\Dunce;
+use Dunces\Lib\IApps;
 
-final class Command
+final class Console implements IApps
 {
 
+    private $dunce;
     private $defaultCmdNamespace = 'Dunces\Console\Cmd';
 
     private $cmdSet;
     private $io;
 
-    public function __construct($settings=array())
+    public $version ='0.0.1';
+
+    public function __construct(Dunce $dunce)
     {
+        $this->dunce = $dunce;
         $this->io = new Io();
         if(isset($settings['CLI'])){
             //TODO 加载命令行启动脚本指定的配置文件
-            $setting = $settings['CLI'];
+            //$setting = $settings['CLI'];
         }else{
             $setting['namespaces'] = array($this->defaultCmdNamespace,'safsf\asdfa\ss');
         }
         $this->cmdSet = new CmdSet($setting['namespaces']);
+        return $this;
     }
-
 
     public function run()
     {
@@ -38,7 +44,7 @@ final class Command
         if($commandFname){
             $cmd = new $commandFname;
             try{
-                $cmd->execute($this->io);
+                $cmd->execute($this->dunce,$this->io);
             }catch (\Exception $e){
                 if($e->getCode() !=0){
                     $msg = $e->getMessage().PHP_EOL.$e->getTraceAsString();
@@ -65,5 +71,6 @@ final class Command
 //        //echo $this->io->getScriptName();
 ////        var_export($this->io->getArgv());
 ////        var_export($this->io->getOpts());
+
     }
 }

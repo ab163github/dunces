@@ -9,6 +9,9 @@
 namespace Dunces\Console\Lib;
 
 
+use Dunces\Lib\AbsCmdInfo;
+use Dunces\Lib\ICommand;
+
 final class CmdSet
 {
     const DEF_CMD_COMMAND = 'info';
@@ -35,7 +38,7 @@ final class CmdSet
 
     private function chkInfoType($obj)
     {
-        return $this->chkCmdType($obj) && ($obj instanceof CmdInfo);
+        return $this->chkCmdType($obj) && ($obj instanceof AbsCmdInfo);
     }
 
     private function chkCmdType($obj)
@@ -57,7 +60,13 @@ final class CmdSet
                     $group = $info->getGroup();
                     $commands = array();
                     foreach ($info->getCommands() as $command=>$fileName) {
-                        $commands[$command] = $this->getFullCmdFname($v,$fileName);
+                        if (isset($commands[$command]))
+                            if (is_array($commands[$command]))
+                                if (in_array($this->getFullCmdFname($v, $fileName), $commands[$command])) {
+                                    echo 'Waring: Command load failed, the command ' . $command . ' in group: ' . $group . ' is exist.';
+                                    continue;
+                                }
+                        $commands[$command] = $this->getFullCmdFname($v, $fileName);
                     }
                     self::$_commandSet[$group]=$commands;
                     echo 'Command info "'.$infoClassName.'" has been loaded.'.PHP_EOL;
