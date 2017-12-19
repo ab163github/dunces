@@ -6,12 +6,12 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Lib;
+namespace Dunces\Dunce\Lib;
 
 
 use Dunces\Dunce;
 
-interface ICommand
+Interface IApp
 {
-    public function execute(Dunce $dunce,ICmdIo $io);
+    public function __construct(Dunce $dunce);
 }

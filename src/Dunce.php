@@ -8,41 +8,81 @@
 
 namespace Dunces;
 
-use Dunces\Console\Console;
-use Noodlehaus\Config;
+use Dunces\Dunce\Config;
+use Dunces\Dunce\Lib\IDunceExt;
+use Dunces\Exts\Console\Console;
 use Pimple\Container;
 
 class Dunce
 {
+    private static $__instance;
+    private static $__callStaticArgs;
+    private $setting;
     private $container;
+    private $extList = array();
 
     public $version = '0.0.1';
 
-    private function initContainer($Apps)
+    private function loadExt()
     {
-        //TODO 由此开始折腾
+        if($this->setting->get('Dunces.namespace',null) && $this->setting->get('Extensions.namespace',null)){
+            $namespace = implode('\\',array($this->setting->get('Dunces.namespace'),$this->setting->get('Extensions.namespace')));
+            foreach ($this->setting->get('Extensions.extension',array()) as $k=>$e){
+                $fullName = implode('\\',array($namespace,$e));
+                if(class_exists($fullName)){
+                    $obj = new $fullName;
+                    if($obj instanceof IDunceExt){
+                        $this->container[trim($k)] = $obj;
+                        array_push($this->extList,trim($k));
+                    }else{
+                        echo "$fullName is not a 'IDunceExt' instance";
+                    }
+                }else{
+                    echo "$fullName is not exist";
+                }
+            }
+        }
+    }
+
+    private function __construct()
+    {
         $this->container = new Container();
-        $this->container['Dunce'] = $this; //框架本身 包含 配置信息 与 容器
-        $this->container['Console'] = new Console($this); //命令行脚本
+        $this->setting = Config::load(__DIR__ . '/Dunce.ini');
+        $this->loadExt();
+
     }
-    
-    public function __construct($settings = array())
+
+    private function __clone(){}
+
+    private static function getDunce(){
+        if (!(self::$__instance  instanceof self)){
+            self::$__instance = new self();
+        }
+        return self::$__instance;
+    }
+
+
+    public static function __callStatic($method,$arg)
     {
-        $defSetting = Config::load(__DIR__.'/Lib/Dunces.ini');
-        $defFwSetting = $defSetting->get('Apps',null);
-
-        $defConsoleSetting = $defSetting->get('Console');
-        $consoleName
-        var_dump($defConsoleSetting);
-        die;
-
-
+        self::$__callStaticArgs = $arg;
+        return self::getDunce()->$method();
     }
 
-    public function getApp($name)
+    protected function getApp()
     {
-        return $this->container[$name];
+        $name = trim(self::$__callStaticArgs[0]);
+        if($this->container->offsetExists($name)){
+            return $this->container->offsetGet($name);
+        }
+        return null;
     }
+
+//    public function loadApp()
+//    {
+//        $
+//    }
+
+
 
 
 }

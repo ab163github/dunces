@@ -6,12 +6,10 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Lib;
+namespace Dunces\Dunce\Lib;
 
 
-use Dunces\Dunce;
-
-Interface IApps
+interface IDunceExt
 {
-    public function __construct(Dunce $dunce);
+
 }

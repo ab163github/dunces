@@ -6,11 +6,8 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Console;
+namespace Dunces\Exts\Console\Lib;
 
-
-use Dunces\Lib\ICmdIo;
-use Dunces\Console\Lib\CommandLine;
 
 
 class Io implements ICmdIo

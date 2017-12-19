@@ -6,7 +6,7 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Lib;
+namespace Dunces\Exts\Console\Lib;
 
 
 interface ICmdIo

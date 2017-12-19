@@ -6,15 +6,12 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Console\Cmd;
+namespace Dunces\Exts\Console\Cmd;
 
 
-
-
-use Dunces\Dunce;
-use Dunces\Lib\ICmdIo;
-use Dunces\Lib\ICommand;
-use Dunces\Lib\AbsCmdInfo;
+use Dunces\Exts\Console\Lib\AbsCmdInfo;
+use Dunces\Exts\Console\Lib\ICmdIo;
+use Dunces\Exts\Console\Lib\ICommand;
 
 class Info extends AbsCmdInfo implements ICommand
 {
@@ -37,15 +34,18 @@ class Info extends AbsCmdInfo implements ICommand
         return array('info'=>'Info');
     }
 
-    public function execute(Dunce $dunce,ICmdIo $io)
+    public function execute(ICmdIo $io)
     {
         $io->outPutLine($this->logo());
         $versions= array();
-        array_push($versions,'Dunces verson: '.$dunce->getApp('Dunce')->version);
-        array_push($versions,'Console version: '.$dunce->getApp('Console')->version);
+        //array_push($versions,'Dunces verson: '.$dunce->getApp('Dunce')->version);
+        //array_push($versions,'Console version: '.$dunce->getApp('Console')->version);
         $io->outPutLine(implode(' ',$versions));
         throw new \Exception('');
     }
+
+
+
 
 //    public function desc()
 //    {
@@ -57,5 +57,6 @@ class Info extends AbsCmdInfo implements ICommand
 //
 //        return ;
 //    }
+
 
 }

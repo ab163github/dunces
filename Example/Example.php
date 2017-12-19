@@ -6,19 +6,15 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Services;
+namespace Example;
 
 
 use Dunces\Dunce;
-use Dunces\Lib\IApps;
 
-class SWBService implements IApps
+class Example
 {
-
-    public function __construct(Dunce $dunce)
+    public function __construct()
     {
-        parent::__construct($dunce);
+        $dunce = new Dunce();
     }
-
-
 }
