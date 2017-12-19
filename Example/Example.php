@@ -9,12 +9,10 @@
 namespace Example;
 
 
-use Dunces\Dunce;
-
 class Example
 {
     public function __construct()
     {
-        $dunce = new Dunce();
+
     }
 }
