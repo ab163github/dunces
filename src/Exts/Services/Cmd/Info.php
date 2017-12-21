@@ -6,7 +6,7 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Services\Cmd;
+namespace Dunces\Exts\Services\Cmd;
 
 use Dunces\Dunce;
 use Dunces\Lib\ICmdIo;

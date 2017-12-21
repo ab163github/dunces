@@ -9,13 +9,14 @@
 namespace Dunces\Exts\Console;
 
 
+use Dunces\Dunce;
 use Dunces\Dunce\Lib\IDunceExt;
 use Dunces\Exts\Console\Lib\CmdSet;
 use Dunces\Exts\Console\Lib\Io;
 
+
 final class Console implements IDunceExt
 {
-    private $defaultCmdNamespace = 'Dunces\Exts\Console\Cmd';
     private $cmdSet;
     private $io;
 
@@ -24,14 +25,7 @@ final class Console implements IDunceExt
     public function __construct()
     {
         $this->io = new Io();
-        if(isset($settings['CLI'])){
-            //TODO 加载命令行启动脚本指定的配置文件
-            //$setting = $settings['CLI'];
-        }else{
-            $setting['namespaces'] = array($this->defaultCmdNamespace,'safsf\asdfa\ss');
-        }
-        $this->cmdSet = new CmdSet($setting['namespaces']);
-        return $this;
+        $this->cmdSet = new CmdSet();
     }
 
     public function run()
@@ -51,7 +45,7 @@ final class Console implements IDunceExt
                 exit($msg);
             }
         }else{
-            echo 'Can not find command: "'.$currentCmd.'" in command list.'.PHP_EOL;
+            echo 'Can not find command: "'.$currentCmd.'".'.PHP_EOL;
         }
 
 

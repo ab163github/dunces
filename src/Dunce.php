@@ -10,77 +10,72 @@ namespace Dunces;
 
 use Dunces\Dunce\Config;
 use Dunces\Dunce\Lib\IDunceExt;
-use Dunces\Exts\Console\Console;
+use http\Exception\BadMessageException;
 use Pimple\Container;
 
-class Dunce
+final class Dunce
 {
-    private static $__instance;
-    private static $__callStaticArgs;
-    private $setting;
-    private $container;
-    private $extList = array();
+    const VERSION = '0.0.1';
+    const SETTING_NAME = 'Setting';
 
-    public $version = '0.0.1';
+    private static $_i;
 
-    private function loadExt()
+    private $_container = null;
+
+    private function _loadExt($namespace,$extensions)
     {
-        if($this->setting->get('Dunces.namespace',null) && $this->setting->get('Extensions.namespace',null)){
-            $namespace = implode('\\',array($this->setting->get('Dunces.namespace'),$this->setting->get('Extensions.namespace')));
-            foreach ($this->setting->get('Extensions.extension',array()) as $k=>$e){
-                $fullName = implode('\\',array($namespace,$e));
-                if(class_exists($fullName)){
-                    $obj = new $fullName;
-                    if($obj instanceof IDunceExt){
-                        $this->container[trim($k)] = $obj;
-                        array_push($this->extList,trim($k));
-                    }else{
-                        echo "$fullName is not a 'IDunceExt' instance";
-                    }
+        foreach ($extensions as $k=>$e){
+            $fullName = implode('\\',array($namespace,$e));
+            if(class_exists($fullName)){
+                $obj = new $fullName;
+                if($obj instanceof IDunceExt){
+                    $this->container[trim($k)] = function () use ($fullName){
+                        return new $fullName;
+                    };
                 }else{
-                    echo "$fullName is not exist";
+                    echo "$fullName is not a 'IDunceExt' instance";
                 }
+            }else{
+                echo "$fullName is not exist";
             }
         }
     }
 
-    private function __construct()
+    private function _loadDunceExt()
     {
-        $this->container = new Container();
-        $this->setting = Config::load(__DIR__ . '/Dunce.ini');
-        $this->loadExt();
+        if(!empty($this->_extList)) return;
+        $setting = $this->_container->offsetGet(self::SETTING_NAME);
+        if($setting->get('Dunces.namespace',null) && $setting->get('Extensions.namespace',null)){
+            $namespace = implode('\\',array($setting->get('Dunces.namespace'),$setting->get('Extensions.namespace')));
+            $this->_loadExt($namespace,$setting->get('Extensions.extension',array()));
+        }
+    }
 
+    private function __construct(){
+        $this->_container = new Container();
+        $this->_container['Setting'] = function ($c){
+            return Config::load(__DIR__ . '/Dunce.ini');
+        };
     }
 
     private function __clone(){}
 
     private static function getDunce(){
-        if (!(self::$__instance  instanceof self)){
-            self::$__instance = new self();
+        if (!(self::$_i  instanceof self)){
+            self::$_i = new self();
         }
-        return self::$__instance;
+        self::$_i->_loadDunceExt();
+        return self::$_i;
     }
-
 
     public static function __callStatic($method,$arg)
     {
-        self::$__callStaticArgs = $arg;
-        return self::getDunce()->$method();
+        if(self::getDunce()->_container->offsetExists($method))
+            return self::getDunce()->_container->offsetGet($method);
+        else
+           echo 'False';
     }
 
-    protected function getApp()
-    {
-        $name = trim(self::$__callStaticArgs[0]);
-        if($this->container->offsetExists($name)){
-            return $this->container->offsetGet($name);
-        }
-        return null;
-    }
-
-//    public function loadApp()
-//    {
-//        $
-//    }
 
 
 

@@ -9,12 +9,15 @@
 namespace Dunces\Exts\Console\Cmd;
 
 
-use Dunces\Exts\Console\Lib\AbsCmdInfo;
 use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\ICommand;
 
-class Info extends AbsCmdInfo implements ICommand
+class Info implements ICommand
 {
+    public function __construct()
+    {
+    }
+
     private function logo()
     {
         $logo = '
@@ -29,11 +32,6 @@ class Info extends AbsCmdInfo implements ICommand
         return $logo;
     }
 
-    protected function setList()
-    {
-        return array('info'=>'Info');
-    }
-
     public function execute(ICmdIo $io)
     {
         $io->outPutLine($this->logo());
@@ -41,7 +39,7 @@ class Info extends AbsCmdInfo implements ICommand
         //array_push($versions,'Dunces verson: '.$dunce->getApp('Dunce')->version);
         //array_push($versions,'Console version: '.$dunce->getApp('Console')->version);
         $io->outPutLine(implode(' ',$versions));
-        throw new \Exception('');
+        //throw new \Exception('');
     }
 
 
@@ -57,6 +55,7 @@ class Info extends AbsCmdInfo implements ICommand
 //
 //        return ;
 //    }
+
 
 
 }

@@ -9,11 +9,9 @@
 namespace Dunces\Exts\Services;
 
 
-
-
 use Dunces\Dunce\Lib\IDunceExt;
 
-class SWBService implements IDunceExt
+class Services implements IDunceExt
 {
 
 }

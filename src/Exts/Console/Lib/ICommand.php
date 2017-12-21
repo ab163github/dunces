@@ -10,5 +10,6 @@ namespace Dunces\Exts\Console\Lib;
 
 interface ICommand
 {
+    public function __construct();
     public function execute(ICmdIo $io);
 }
