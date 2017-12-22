@@ -9,14 +9,13 @@
 namespace Dunces\Exts\Console\Cmd;
 
 
+use Dunces\Dunce;
 use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\ICommand;
 
 class Info implements ICommand
 {
-    public function __construct()
-    {
-    }
+    public function __construct(){}
 
     private function logo()
     {
@@ -35,11 +34,14 @@ class Info implements ICommand
     public function execute(ICmdIo $io)
     {
         $io->outPutLine($this->logo());
-        $versions= array();
-        //array_push($versions,'Dunces verson: '.$dunce->getApp('Dunce')->version);
-        //array_push($versions,'Console version: '.$dunce->getApp('Console')->version);
+        $versions = Dunce::Version();
         $io->outPutLine(implode(' ',$versions));
-        //throw new \Exception('');
+        $io->outPutLine('Use:');
+        $io->outPutLine('  php your_script_name ');
+        $io->outPutLine('Commands:');
+        foreach (Dunce::Console()->allCmd() as $v){
+            $io->outPutLine('  '.$v);
+        }
     }
 
 

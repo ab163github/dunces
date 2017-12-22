@@ -9,58 +9,59 @@
 namespace Dunces;
 
 use Dunces\Dunce\Config;
-use Dunces\Dunce\Lib\IDunceExt;
-use http\Exception\BadMessageException;
 use Pimple\Container;
 
 final class Dunce
 {
-    const VERSION = '0.0.1';
+    const DUNCE_VERSION = '0.0.1';
     const SETTING_NAME = 'Setting';
+    const EXT_G_INTERFACE = 'Dunces\Dunce\Lib\IDunceExt';
 
     private static $_i;
-
+    private $_dunceExts = array();
     private $_container = null;
 
-    private function _loadExt($namespace,$extensions)
+    private function _chkExtImpType($extFullName)
     {
-        foreach ($extensions as $k=>$e){
-            $fullName = implode('\\',array($namespace,$e));
-            if(class_exists($fullName)){
-                $obj = new $fullName;
-                if($obj instanceof IDunceExt){
-                    $this->container[trim($k)] = function () use ($fullName){
-                        return new $fullName;
-                    };
-                }else{
-                    echo "$fullName is not a 'IDunceExt' instance";
-                }
-            }else{
-                echo "$fullName is not exist";
+        $implements = class_implements($extFullName);
+        if(is_array($implements)){
+            if(in_array(self::EXT_G_INTERFACE,$implements)){
+                return true;
             }
         }
+        return false;
     }
 
     private function _loadDunceExt()
     {
-        if(!empty($this->_extList)) return;
+        if(!empty($this->_dunceExts)) return;
         $setting = $this->_container->offsetGet(self::SETTING_NAME);
         if($setting->get('Dunces.namespace',null) && $setting->get('Extensions.namespace',null)){
             $namespace = implode('\\',array($setting->get('Dunces.namespace'),$setting->get('Extensions.namespace')));
-            $this->_loadExt($namespace,$setting->get('Extensions.extension',array()));
+            foreach ($setting->get('Extensions.extension',array()) as $k=>$v){
+                if(in_array(trim($k),$this->_dunceExts)) continue;
+                $fullName = implode('\\',array($namespace,$v));
+                if($this->_chkExtImpType($fullName)){
+                    $this->_container[trim($k)] = function ($c) use ($fullName){ return new $fullName;};
+                    $this->_dunceExts[] = trim($k);
+                }
+            }
         }
     }
 
     private function __construct(){
         $this->_container = new Container();
-        $this->_container['Setting'] = function ($c){
+        $this->_container[self::SETTING_NAME] = function ($c){
             return Config::load(__DIR__ . '/Dunce.ini');
+        };
+        $this->_container['Version'] = function ($c){
+            return 'Dunces version: '.self::DUNCE_VERSION;
         };
     }
 
     private function __clone(){}
 
-    private static function getDunce(){
+    private static function _getDunce(){
         if (!(self::$_i  instanceof self)){
             self::$_i = new self();
         }
@@ -70,10 +71,10 @@ final class Dunce
 
     public static function __callStatic($method,$arg)
     {
-        if(self::getDunce()->_container->offsetExists($method))
-            return self::getDunce()->_container->offsetGet($method);
+        if(self::_getDunce()->_container->offsetExists($method))
+            return self::_getDunce()->_container->offsetGet($method);
         else
-           echo 'False';
+           return null;
     }
 
 

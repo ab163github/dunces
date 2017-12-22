@@ -13,10 +13,12 @@ final class CmdSet
 {
     const DEF_CMD_COMMAND = 'info';
     const DEF_CMD_PREFIX = 'default';
+    const CMD_G_INTERFACE = 'Dunces\Exts\Console\Lib\ICommand';
+
     private $_commandSet = array();
     private $_namespaceSet = array();
 
-    private function getCommand($c)
+    private function _getCommand($c)
     {
         if(strpos($c,'/') === false){
             $command = self::DEF_CMD_PREFIX.'/'.$c;
@@ -28,50 +30,49 @@ final class CmdSet
         return $command;
     }
 
-    private function chkCmdType($obj)
+    private function _chkCmdType($cmdFullPath)
     {
-        return $obj instanceof ICommand;
+        $implements = class_implements($cmdFullPath);
+        if(is_array($implements)){
+            if(in_array(self::CMD_G_INTERFACE,$implements)){
+                return true;
+            }
+        }
+        return false;
     }
 
-    private function cmdLoader(array $commands)
+    private function _cmdLoader(array $commands)
     {
         foreach ($commands as $k=> $v){
-            $command = $this->getCommand($k);
+            $command = $this->_getCommand($k);
             if(in_array($command,$this->_commandSet)) continue;
-            if(class_exists($v)){
-//                var_dump(class_implements($v));
-//                die;
-                if($this->chkCmdType(new $v)) $this->_namespaceSet[$command]=$v;
+            if($this->_chkCmdType($v)){
+                $this->_commandSet[]=$command;
+                $this->_namespaceSet[$command]=$v;
             }
         }
     }
 
     public function __construct()
     {
-        $this->cmdLoader(array('info'=>'Dunces\Exts\Console\Cmd\Info'));
+        $this->_cmdLoader(array('info'=>'Dunces\Exts\Console\Cmd\Info'));
+    }
+
+    public function getCommand(ICmdIo $io)
+    {
+        if($io->getCommand()) $currentCmd = $io->getCommand(); else $currentCmd = self::DEF_CMD_COMMAND;
+        $currentCmd = $this->_getCommand($currentCmd);
+        if(in_array($currentCmd,$this->_commandSet)){
+            return new $this->_namespaceSet[$currentCmd];
+        }else{
+            $io->outPutLine('Can not find command: "'.$currentCmd.'.');
+        }
 
     }
 
-    public function getCommandPath($commandStr)
+    public function getLoadedCommands()
     {
-        return '';
-        $command = explode('/',strtolower(trim($commandStr)));
-        if(empty($command[0])){
-            $group = self::DEF_CMD_GROUP;
-            $cmd = self::DEF_CMD_COMMAND;
-        }else{
-            if(count($command) == 2){
-                $group = $command[0];
-                $cmd = $command[1];
-            }else{
-                $group = self::DEF_CMD_GROUP;
-                $cmd = $command[0];
-            }
-        }
-        if(isset(self::$_commandSet[$group]))
-            if(isset(self::$_commandSet[$group][$cmd]))
-                return self::$_commandSet[$group][$cmd];
-        return null;
+        return $this->_commandSet;
     }
 
     public function loadCmdLines($commands)
