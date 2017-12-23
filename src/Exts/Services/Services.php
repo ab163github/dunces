@@ -14,4 +14,5 @@ use Dunces\Dunce\Lib\IDunceExt;
 class Services implements IDunceExt
 {
 
+    public function __construct(){}
 }

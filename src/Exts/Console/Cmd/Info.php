@@ -10,6 +10,7 @@ namespace Dunces\Exts\Console\Cmd;
 
 
 use Dunces\Dunce;
+use Dunces\Exts\Console\Lib\CmdDesc;
 use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\ICommand;
 
@@ -26,38 +27,75 @@ class Info implements ICommand
           _/    _/  _/    _/  _/  _/  _/  _/        _/_/_/      _/_/            
          _/    _/  _/    _/  _/    _/_/  _/        _/              _/           
         _/_/_/      _/_/    _/      _/    _/_/_/  _/_/_/_/  _/_/_/              
-======********************************************************************=======        
-        ';
+======********************************************************************=======';
         return $logo;
+    }
+
+    private function usage(){
+        return '<command> [args] [options]';
+    }
+
+    private function showInfo(ICmdIo $io){
+        $io->outPutLine($this->logo());
+        $io->outPutLine(Dunce::Version());
+        $io->outPutLine('Usage: '.$this->usage());
+        $io->outPutLine('Options:');
+        self::info($io);
+        $io->outPutLine('Available commands are:');
+        $allCommands = Dunce::Console()->allCmd();
+        $cmdMaxWidth = 0;
+        $noGroupCmd = array();
+        $groupedCmd = array();
+        foreach (array_keys($allCommands) as $command){
+            if(strpos($command, 'default/') === 0){
+                $command = substr($command,strlen('default/'));
+                $noGroupCmd[] = $command;
+            }else{
+                $groupedCmd[] = $command;
+            }
+            if(strlen($command) > $cmdMaxWidth) $cmdMaxWidth = strlen($command);
+        }
+        foreach ($noGroupCmd as $cmd){
+            $cmdDis = str_pad($cmd,$cmdMaxWidth+1,' ');
+             $cmdPath = $allCommands['default/'.$cmd];
+             $io->outPutLine('  '.$cmdDis.$cmdPath::description());
+        }
+        foreach ($groupedCmd as $cmd){
+            $cmdDis = str_pad($cmd,$cmdMaxWidth+1,' ');
+            $cmdPath = $allCommands[$cmd];
+            $io->outPutLine('  '.$cmdDis.$cmdPath::description());
+        }
+    }
+
+    public static function description()
+    {
+        return '显示Dunce命令行信息';
+    }
+
+    public static function info(ICmdIo $io)
+    {
+        $info =  array(
+            array('opt'=>'-i, --info','desc'=>''),
+            array('opt'=>'-v, --version','desc'=>'显示版本信息'),
+            array('opt'=>'-h, --help','desc'=>'显示命令行帮助信息'),
+        );
+        $io->outPutCmdInfo($info);
+    }
+
+    public static function help(ICmdIo $io)
+    {
+        self::info($io);
+    }
+
+    public static function version(ICmdIo $io)
+    {
+        $io->outPutLine('0.0.1');
     }
 
     public function execute(ICmdIo $io)
     {
-        $io->outPutLine($this->logo());
-        $versions = Dunce::Version();
-        $io->outPutLine(implode(' ',$versions));
-        $io->outPutLine('Use:');
-        $io->outPutLine('  php your_script_name ');
-        $io->outPutLine('Commands:');
-        foreach (Dunce::Console()->allCmd() as $v){
-            $io->outPutLine('  '.$v);
-        }
+        $this->showInfo($io);
     }
-
-
-
-
-//    public function desc()
-//    {
-//        $desc['desc'] = 'Show the dunces framework information';
-//        $desc['opts'] = array(
-//            '-v,--version'=>'Show dunces framework version',
-//            '-h,--help'=>'show'
-//        );
-//
-//        return ;
-//    }
-
 
 
 }

@@ -11,6 +11,7 @@ namespace Dunces\Exts\Console;
 
 use Dunces\Dunce\Lib\IDunceExt;
 use Dunces\Exts\Console\Lib\CmdSet;
+use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\Io;
 
 
@@ -19,7 +20,34 @@ final class Console implements IDunceExt
     private $cmdSet;
     private $io;
 
-    public $version ='0.0.1';
+    private function optFunc($opts)
+    {
+        $optFunc = null;
+        $optNames = array_keys($opts);
+        foreach ($opts as $k=>$v){
+            if($v){
+                if(in_array($k,$optNames)){
+                    switch ($k){
+                        case 'i':
+                        case 'info':
+                            $optFunc = 'info';
+                            break;
+                        case 'v':
+                        case 'version':
+                            $optFunc = 'version';
+                            break;
+                        case 'h':
+                        case 'help':
+                            $optFunc = 'help';
+                            break;
+                    }
+                }
+            }
+            if($optFunc) break;
+        }
+        return $optFunc;
+        $opts = $this->io->getOpts();
+    }
 
     public function __construct()
     {
@@ -31,7 +59,12 @@ final class Console implements IDunceExt
     {
         $currentCmd = $this->cmdSet->getCommand($this->io);
         if($currentCmd){
-            return $currentCmd->execute($this->io);
+            $optFunc = $this->optFunc($this->io->getOpts());
+            if($optFunc){
+                $currentCmd::$optFunc($this->io);
+            }else{
+                (new $currentCmd)->execute($this->io);
+            }
         }
     }
 

@@ -9,6 +9,8 @@
 namespace Dunces\Exts\Console\Lib;
 
 
+use Dunces\Dunce;
+
 final class CmdSet
 {
     const DEF_CMD_COMMAND = 'info';
@@ -55,7 +57,10 @@ final class CmdSet
 
     public function __construct()
     {
-        $this->_cmdLoader(array('info'=>'Dunces\Exts\Console\Cmd\Info'));
+        $settingName = Dunce::SETTING_NAME;
+        $commands = Dunce::$settingName()->get('Console.command',array());
+        $commands = array_merge($commands,array('info'=>'Dunces\Exts\Console\Cmd\Info'));
+        $this->_cmdLoader($commands);
     }
 
     public function getCommand(ICmdIo $io)
@@ -63,21 +68,15 @@ final class CmdSet
         if($io->getCommand()) $currentCmd = $io->getCommand(); else $currentCmd = self::DEF_CMD_COMMAND;
         $currentCmd = $this->_getCommand($currentCmd);
         if(in_array($currentCmd,$this->_commandSet)){
-            return new $this->_namespaceSet[$currentCmd];
+            return $this->_namespaceSet[$currentCmd];
         }else{
             $io->outPutLine('Can not find command: "'.$currentCmd.'.');
         }
-
     }
 
     public function getLoadedCommands()
     {
-        return $this->_commandSet;
+        return $this->_namespaceSet;
     }
 
-    public function loadCmdLines($commands)
-    {
-        //if(is_array($namespaces)) $this->cmdLoader($namespaces);
-        echo 'sss';
-    }
 }

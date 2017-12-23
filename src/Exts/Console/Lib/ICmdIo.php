@@ -17,4 +17,7 @@ interface ICmdIo
     public function getOpts();
     public function getArgv();
     public function outPutLine($msg,$newLine=true);
+    public function outPutCmdInfo(array $info);
+
+
 }

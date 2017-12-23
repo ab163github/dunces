@@ -11,5 +11,5 @@ namespace Dunces\Dunce\Lib;
 
 interface IDunceExt
 {
-
+    public function __construct();
 }

@@ -19,6 +19,17 @@ class Io implements ICmdIo
     private $argv;
     private $opts;
 
+    private function columnMaxWidth(array $column)
+    {
+        $maxWidth = 0;
+        foreach ($column as $v){
+            if($maxWidth < strlen($v)){
+                $maxWidth = strlen($v);
+            }
+        }
+        return $maxWidth;
+    }
+
     public function __construct()
     {
         $argv = $_SERVER['argv'];
@@ -72,4 +83,27 @@ class Io implements ICmdIo
         if($newLine) echo PHP_EOL;
     }
 
+    public function outPutCmdInfo(array $info)
+    {
+        $optColumn = array_column($info,'opt');
+        $descColumn = array_column($info,'desc');
+        $columns['opt'] = $optColumn;
+        $columns['desc'] = $descColumn;
+        $columnsWidth = array();
+        foreach ($columns as $k=>$v) {
+            $columnsWidth[$k] = $this->columnMaxWidth($v);
+        }
+
+        foreach ($info as $item) {
+            $outPut = '';
+            foreach ($item as $k=>$v){
+                $outPut.= str_pad($v,$columnsWidth[$k]+1,' ');
+            }
+            $this->outPutLine('  '.$outPut);
+        }
+
+        //var_dump($columnsWidth);
+        //array_column($command->info(),)
+        //var_dump($command->info());
+    }
 }

@@ -8,22 +8,39 @@
 
 namespace Dunces\Exts\Services\Cmd;
 
-use Dunces\Dunce;
-use Dunces\Lib\ICmdIo;
-use Dunces\Lib\AbsCmdInfo;
-use Dunces\Lib\ICommand;
+use Dunces\Exts\Console\Lib\ICmdIo;
+use Dunces\Exts\Console\Lib\ICommand;
 
-class Info extends AbsCmdInfo implements ICommand
+class Info implements ICommand
 {
-    public $version = '0.0.1';
 
-    protected function setList()
+    public static function description()
     {
-        return array('service'=>'Info');
+        return '显示服务的命令行信息';
     }
 
-    public function execute(Dunce $dunce, ICmdIo $io)
+    public function __construct(){}
+
+
+    public static function info(ICmdIo $io)
+    {
+        // TODO: Implement info() method.
+        $io->outPutLine( 'hahah' );
+    }
+
+    public static function help(ICmdIo $io)
+    {
+        // TODO: Implement help() method.
+    }
+
+    public static function version(ICmdIo $io)
+    {
+        // TODO: Implement version() method.
+    }
+
+    public function execute(ICmdIo $io)
     {
         // TODO: Implement execute() method.
+        $io->outPutLine(__METHOD__);
     }
 }
