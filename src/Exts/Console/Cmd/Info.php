@@ -55,11 +55,13 @@ class Info implements ICommand
             }
             if(strlen($command) > $cmdMaxWidth) $cmdMaxWidth = strlen($command);
         }
+        sort($noGroupCmd);
         foreach ($noGroupCmd as $cmd){
             $cmdDis = str_pad($cmd,$cmdMaxWidth+1,' ');
              $cmdPath = $allCommands['default/'.$cmd];
              $io->outPutLine('  '.$cmdDis.$cmdPath::description());
         }
+        sort($groupedCmd);
         foreach ($groupedCmd as $cmd){
             $cmdDis = str_pad($cmd,$cmdMaxWidth+1,' ');
             $cmdPath = $allCommands[$cmd];
@@ -69,7 +71,7 @@ class Info implements ICommand
 
     public static function description()
     {
-        return '显示Dunce命令行信息';
+        return 'Dunces 控制台信息';
     }
 
     public static function info(ICmdIo $io)
@@ -89,7 +91,7 @@ class Info implements ICommand
 
     public static function version(ICmdIo $io)
     {
-        $io->outPutLine('0.0.1');
+        $io->outPutLine(Dunce::Version());
     }
 
     public function execute(ICmdIo $io)

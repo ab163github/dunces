@@ -46,7 +46,6 @@ final class Console implements IDunceExt
             if($optFunc) break;
         }
         return $optFunc;
-        $opts = $this->io->getOpts();
     }
 
     public function __construct()

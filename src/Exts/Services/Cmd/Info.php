@@ -8,6 +8,7 @@
 
 namespace Dunces\Exts\Services\Cmd;
 
+use Dunces\Dunce;
 use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\ICommand;
 
@@ -16,7 +17,7 @@ class Info implements ICommand
 
     public static function description()
     {
-        return '显示服务的命令行信息';
+        return 'Dunces 服务管理';
     }
 
     public function __construct(){}
@@ -24,22 +25,24 @@ class Info implements ICommand
 
     public static function info(ICmdIo $io)
     {
-        // TODO: Implement info() method.
-        $io->outPutLine( 'hahah' );
+        $io->outPutLine('Usage: service <commands> [-opt]');
+        $io->outPutLine('Available commands are: start|stop|restart|status');
+        $io->outPutLine('Options: -n,--name');
     }
 
     public static function help(ICmdIo $io)
     {
-        // TODO: Implement help() method.
+        self::info($io);
     }
 
     public static function version(ICmdIo $io)
     {
-        // TODO: Implement version() method.
+        $io->outPutLine(Dunce::Version());
     }
 
     public function execute(ICmdIo $io)
     {
+        var_dump($io->getArgv());
         // TODO: Implement execute() method.
         $io->outPutLine(__METHOD__);
     }

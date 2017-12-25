@@ -85,15 +85,15 @@ class Io implements ICmdIo
 
     public function outPutCmdInfo(array $info)
     {
-        $optColumn = array_column($info,'opt');
-        $descColumn = array_column($info,'desc');
-        $columns['opt'] = $optColumn;
-        $columns['desc'] = $descColumn;
+        $keys = array_keys($info[0]);
+        $columns = array();
+        foreach ($keys as $v){
+            $columns[$v] = array_column($info,$v);
+        }
         $columnsWidth = array();
         foreach ($columns as $k=>$v) {
             $columnsWidth[$k] = $this->columnMaxWidth($v);
         }
-
         foreach ($info as $item) {
             $outPut = '';
             foreach ($item as $k=>$v){
@@ -101,9 +101,5 @@ class Io implements ICmdIo
             }
             $this->outPutLine('  '.$outPut);
         }
-
-        //var_dump($columnsWidth);
-        //array_column($command->info(),)
-        //var_dump($command->info());
     }
 }
