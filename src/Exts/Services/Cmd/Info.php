@@ -9,25 +9,41 @@
 namespace Dunces\Exts\Services\Cmd;
 
 use Dunces\Dunce;
+use Dunces\Exts\Console\Lib\ConsoleException;
 use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\ICommand;
+use Dunces\Exts\Services\Lib\IConsoleManagementService;
 
 class Info implements ICommand
 {
+    private $_availableArg;
 
     public static function description()
     {
         return 'Dunces 服务管理';
     }
 
-    public function __construct(){}
+    public function __construct(){
+        $this->_availableArg = array('start','stop','reload','status');
+    }
 
 
     public static function info(ICmdIo $io)
     {
-        $io->outPutLine('Usage: service <commands> [-opt]');
-        $io->outPutLine('Available commands are: start|stop|restart|status');
-        $io->outPutLine('Options: -n,--name');
+        $io->outPutLine('Usage: service <arg> <-opt>');
+        $io->outPutLine('Available args are:');
+        $info =  array(
+            array('arg'=>'start','desc'=>'启动服务'),
+            array('arg'=>'stop','desc'=>'停止服务'),
+            array('arg'=>'reload','desc'=>'重载服务'),
+            array('arg'=>'status','desc'=>'服务状态'),
+        );
+        $io->outPutCmdInfo($info);
+        $io->outPutLine('Options: ');
+        $info =  array(
+            array('opt'=>'-n,--name','desc'=>'服务名称'),
+        );
+        $io->outPutCmdInfo($info);
     }
 
     public static function help(ICmdIo $io)
@@ -42,8 +58,29 @@ class Info implements ICommand
 
     public function execute(ICmdIo $io)
     {
-        var_dump($io->getArgv());
-        // TODO: Implement execute() method.
-        $io->outPutLine(__METHOD__);
+        $settingName = Dunce::SETTING_NAME;
+        $services = Dunce::$settingName()->get('Services.service',array());
+        $argv = $io->getArgv();
+        if(empty($argv)) throw new ConsoleException('Command arg is required.');
+        $opts = $io->getOpts();
+        if(isset($opts['n'])){
+            $service = $opts['n'];
+        }elseif(isset($opts['name'])){
+            $service = $opts['name'];
+        }else{
+            throw new ConsoleException('Option n or name not found.');
+        }
+        if(isset($services[$service])){
+            $servicePath = $services[$service];
+            $entity = new $servicePath();
+            if($entity instanceof IConsoleManagementService){
+                $arg = $argv[0];
+                $entity->$arg();
+            }else{
+                throw new ConsoleException(sprintf('Console can not manage the service  "%s" ',$service));
+            }
+        }else{
+            throw new ConsoleException(sprintf('Service "%s" not found',$service));
+        }
     }
 }

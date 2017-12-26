@@ -11,7 +11,7 @@ namespace Dunces\Exts\Console;
 
 use Dunces\Dunce\Lib\IDunceExt;
 use Dunces\Exts\Console\Lib\CmdSet;
-use Dunces\Exts\Console\Lib\ICmdIo;
+use Dunces\Exts\Console\Lib\ConsoleException;
 use Dunces\Exts\Console\Lib\Io;
 
 
@@ -54,22 +54,31 @@ final class Console implements IDunceExt
         $this->cmdSet = new CmdSet();
     }
 
-    public function run()
-    {
-        $currentCmd = $this->cmdSet->getCommand($this->io);
-        if($currentCmd){
-            $optFunc = $this->optFunc($this->io->getOpts());
-            if($optFunc){
-                $currentCmd::$optFunc($this->io);
-            }else{
-                (new $currentCmd)->execute($this->io);
-            }
-        }
-    }
-
     public function allCmd()
     {
         return $this->cmdSet->getLoadedCommands();
+    }
+
+    public function run()
+    {
+        try{
+            $currentCmd = $this->cmdSet->getCommand($this->io);
+            if($currentCmd){
+                $optFunc = $this->optFunc($this->io->getOpts());
+                if($optFunc){
+                    $currentCmd::$optFunc($this->io);
+                }else{
+                    (new $currentCmd)->execute($this->io);
+                }
+            }
+        }catch(ConsoleException $ce){
+            if($ce->getCode() === 0){
+                echo $ce->getMessage().PHP_EOL;
+                exit(0);
+            }
+            throw $ce;
+        }
+
     }
 
 }

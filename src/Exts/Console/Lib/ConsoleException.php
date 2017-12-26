@@ -6,13 +6,10 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Exts\Services;
+namespace Dunces\Exts\Console\Lib;
 
 
-use Dunces\Dunce\Lib\IDunceExt;
-
-class Services implements IDunceExt
+class ConsoleException extends \Exception
 {
 
-    public function __construct(){}
 }
