@@ -24,7 +24,7 @@ class Info implements ICommand
     }
 
     public function __construct(){
-        $this->_availableArg = array('start','stop','reload','status');
+        $this->_availableArg = array('start','stop','reload','restart');
     }
 
 
@@ -36,7 +36,7 @@ class Info implements ICommand
             array('arg'=>'start','desc'=>'启动服务'),
             array('arg'=>'stop','desc'=>'停止服务'),
             array('arg'=>'reload','desc'=>'重载服务'),
-            array('arg'=>'status','desc'=>'服务状态'),
+            array('arg'=>'restart','desc'=>'重启服务'),
         );
         $io->outPutCmdInfo($info);
         $io->outPutLine('Options: ');
@@ -72,7 +72,7 @@ class Info implements ICommand
         }
         if(isset($services[$service])){
             $servicePath = $services[$service];
-            $entity = new $servicePath();
+            $entity = new $servicePath($service);
             if($entity instanceof IConsoleManagementService){
                 $arg = $argv[0];
                 $entity->$arg();

@@ -11,9 +11,9 @@ namespace Dunces\Exts\Services\Lib;
 
 interface IConsoleManagementService
 {
-    public function __construct();
+    public function __construct($serverName);
     public function start();
     public function stop();
     public function reload();
-    public function status();
+    public function restart();
 }

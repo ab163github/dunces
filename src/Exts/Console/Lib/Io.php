@@ -101,5 +101,6 @@ class Io implements ICmdIo
             }
             $this->outPutLine('  '.$outPut);
         }
+        $this->outPutLine(' ');
     }
 }

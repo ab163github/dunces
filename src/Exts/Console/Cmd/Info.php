@@ -21,13 +21,13 @@ class Info implements ICommand
     private function logo()
     {
         $logo = '
-======*********************************************************************======       
-            _/_/_/    _/    _/  _/      _/    _/_/_/  _/_/_/_/    _/_/_/        
-           _/    _/  _/    _/  _/_/    _/  _/        _/        _/               
-          _/    _/  _/    _/  _/  _/  _/  _/        _/_/_/      _/_/            
-         _/    _/  _/    _/  _/    _/_/  _/        _/              _/           
-        _/_/_/      _/_/    _/      _/    _/_/_/  _/_/_/_/  _/_/_/              
-======********************************************************************=======';
+===******************************************************************===       
+        _/_/_/    _/    _/  _/      _/    _/_/_/  _/_/_/_/    _/_/_/        
+       _/    _/  _/    _/  _/_/    _/  _/        _/        _/               
+      _/    _/  _/    _/  _/  _/  _/  _/        _/_/_/      _/_/            
+     _/    _/  _/    _/  _/    _/_/  _/        _/              _/           
+    _/_/_/      _/_/    _/      _/    _/_/_/  _/_/_/_/  _/_/_/              
+===******************************************************************===';
         return $logo;
     }
 
@@ -38,7 +38,9 @@ class Info implements ICommand
     private function showInfo(ICmdIo $io){
         $io->outPutLine($this->logo());
         $io->outPutLine(Dunce::Version());
+        $io->outPutLine(' ');
         $io->outPutLine('Usage: '.$this->usage());
+        $io->outPutLine(' ');
         $io->outPutLine('Options:');
         self::info($io);
         $io->outPutLine('Available commands are:');
@@ -67,6 +69,7 @@ class Info implements ICommand
             $cmdPath = $allCommands[$cmd];
             $io->outPutLine('  '.$cmdDis.$cmdPath::description());
         }
+        $io->outPutLine(PHP_EOL);
     }
 
     public static function description()
@@ -82,6 +85,7 @@ class Info implements ICommand
             array('opt'=>'-h, --help','desc'=>'显示命令行帮助信息'),
         );
         $io->outPutCmdInfo($info);
+
     }
 
     public static function help(ICmdIo $io)
