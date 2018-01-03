@@ -12,7 +12,7 @@ use Dunces\Dunce;
 use Dunces\Exts\Console\Lib\ConsoleException;
 use Dunces\Exts\Console\Lib\ICmdIo;
 use Dunces\Exts\Console\Lib\ICommand;
-use Dunces\Exts\Services\Lib\IConsoleManagementService;
+use Dunces\Exts\Console\Lib\IConsoleManagementService;
 
 class Info implements ICommand
 {
@@ -35,13 +35,13 @@ class Info implements ICommand
         $info =  array(
             array('arg'=>'start','desc'=>'启动服务'),
             array('arg'=>'stop','desc'=>'停止服务'),
-            array('arg'=>'reload','desc'=>'重载服务'),
-            array('arg'=>'restart','desc'=>'重启服务'),
+            array('arg'=>'reload','desc'=>'重载服务')
         );
         $io->outPutCmdInfo($info);
         $io->outPutLine('Options: ');
         $info =  array(
             array('opt'=>'-n,--name','desc'=>'服务名称'),
+            array('opt'=>'--only_task','desc'=>'是否之重启TASK'),
         );
         $io->outPutCmdInfo($info);
     }
@@ -75,7 +75,7 @@ class Info implements ICommand
             $entity = new $servicePath($service);
             if($entity instanceof IConsoleManagementService){
                 $arg = $argv[0];
-                $entity->$arg();
+                $entity->$arg($io);
             }else{
                 throw new ConsoleException(sprintf('Console can not manage the service  "%s" ',$service));
             }

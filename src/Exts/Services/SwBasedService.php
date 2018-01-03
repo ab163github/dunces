@@ -10,7 +10,8 @@ namespace Dunces\Exts\Services;
 
 
 use Dunces\Dunce;
-use Dunces\Exts\Services\Lib\IConsoleManagementService;
+use Dunces\Exts\Console\Lib\ICmdIo;
+use Dunces\Exts\Console\Lib\IConsoleManagementService;
 
 class SwBasedService implements IConsoleManagementService
 {
@@ -51,7 +52,7 @@ class SwBasedService implements IConsoleManagementService
         $this->pidPath = Dunce::$settingName()->get('Services.pid_path','/etc/Dunces/Service');
     }
 
-    public function start()
+    public function start(ICmdIo $io)
     {
         if($this->loadPid() == 0){
             $http = new \swoole_http_server("0.0.0.0", 80);
@@ -81,42 +82,61 @@ class SwBasedService implements IConsoleManagementService
                 $response->end("<h1>Hello Swoole. #".rand(1000, 9999)."</h1>");
             });
             $http->start();
+        }else{
+            $io->outPutLine("Web service has been started, and PID is ".$this->loadPid());
+            exit(0);
         };
     }
 
-    public function stop()
+    public function stop(ICmdIo $io)
     {
-        // TODO: Implement stop() method.
         $timeout = 60;
         $startTime = time();
-        $this->serverSetting['masterPid'] && posix_kill($this->serverSetting['masterPid'], SIGTERM);
-
-        $result = true;
-        while (1) {
-            $masterIslive = $this->serverSetting['masterPid'] && posix_kill($this->serverSetting['masterPid'], SIGTERM);
-            if ($masterIslive) {
-                if (time() - $startTime >= $timeout) {
-                    $result = false;
-                    break;
+        $pid = $this->loadPid();
+        if($pid != 0){
+            $pid && posix_kill($pid, SIGTERM);
+            $result = true;
+            while (1) {
+                $masterIslive = $pid && posix_kill($pid, SIGTERM);
+                if ($masterIslive) {
+                    if (time() - $startTime >= $timeout) {
+                        $result = false;
+                        break;
+                    }
+                    usleep(10000);
+                    continue;
                 }
-                usleep(10000);
-                continue;
+                break;
             }
-
-            break;
+            if($result){
+                $this->writePid(0);
+                $io->outPutLine("Web service was successfully closed.");
+                exit(0);
+            }else{
+                $io->outPutLine("Web service shutdown failed, please shut down manually.");
+                exit(0);
+            }
+        }else{
+            $io->outPutLine("Web service has been shut down.");
+            exit(0);
         }
-        return $result;
+
     }
 
-    public function reload()
+    public function reload(ICmdIo $io)
     {
-        // TODO: Implement reload() method.
-        $signal = $onlyTask ? SIGUSR2 : SIGUSR1;
-        posix_kill($this->serverSetting['managerPid'], $signal);
+        $pid = $this->loadPid();
+        if($pid != 0){
+            $opts = $io->getOpts();
+            if(isset($opts['only_task'])) $onlyTask = true; else $onlyTask = false;
+            $signal = $onlyTask ? SIGUSR2 : SIGUSR1;
+            posix_kill($pid, $signal);
+            $io->outPutLine("Web service was successfully reloaded, and PID is ".$this->loadPid());
+            exit(0);
+        }else{
+            $io->outPutLine("Web service been shut down.");
+            exit(0);
+        }
     }
 
-    public function restart()
-    {
-        // TODO: Implement status() method.
-    }
 }
