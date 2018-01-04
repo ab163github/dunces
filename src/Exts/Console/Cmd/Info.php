@@ -74,7 +74,7 @@ class Info implements ICommand
 
     public static function description()
     {
-        return 'Dunces 控制台信息';
+        return '显示命令行信息';
     }
 
     public static function info(ICmdIo $io)

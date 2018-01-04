@@ -13,5 +13,13 @@ use Dunces\Dunce\Lib\IDunceExt;
 
 class Service implements IDunceExt
 {
-    public function __construct(){}
+    public function __construct(){
+
+    }
+
+    public function hh()
+    {
+        echo __METHOD__;
+    }
+
 }

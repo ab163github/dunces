@@ -58,11 +58,11 @@ class SwBasedService implements IConsoleManagementService
             $http = new \swoole_http_server("0.0.0.0", 80);
             $http->set(array('daemonize'=>1));
             $sobj = $this;
-            $http->on('start',function($server) use ($sobj){
+            $http->on('start',function($server) use ($sobj,$io){
                 $pid = $server->master_pid;
                 swoole_set_process_name("web_server_".$pid);
                 if($sobj->writePid($pid)){
-                    //echo $pid;
+                    $io->outPutLine("Web service was successfully started, and PID is ".$this->loadPid());
                 }else{
                     $server->shutdown();
                 };
@@ -130,9 +130,13 @@ class SwBasedService implements IConsoleManagementService
             $opts = $io->getOpts();
             if(isset($opts['only_task'])) $onlyTask = true; else $onlyTask = false;
             $signal = $onlyTask ? SIGUSR2 : SIGUSR1;
-            posix_kill($pid, $signal);
-            $io->outPutLine("Web service was successfully reloaded, and PID is ".$this->loadPid());
-            exit(0);
+            if(posix_kill($pid, $signal)){
+                $io->outPutLine("Web service was successfully reloaded, and PID is ".$this->loadPid());
+                exit(0);
+            }else{
+                $io->outPutLine("Web service reload failed, please restart manually and restart.");
+                exit(0);
+            }
         }else{
             $io->outPutLine("Web service been shut down.");
             exit(0);

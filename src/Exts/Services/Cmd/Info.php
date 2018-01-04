@@ -20,13 +20,12 @@ class Info implements ICommand
 
     public static function description()
     {
-        return 'Dunces 服务管理';
+        return '控制台服务管理命令，包括启动、关闭和重载';
     }
 
     public function __construct(){
-        $this->_availableArg = array('start','stop','reload','restart');
+        $this->_availableArg = array('start','stop','reload');
     }
-
 
     public static function info(ICmdIo $io)
     {
@@ -41,7 +40,9 @@ class Info implements ICommand
         $io->outPutLine('Options: ');
         $info =  array(
             array('opt'=>'-n,--name','desc'=>'服务名称'),
-            array('opt'=>'--only_task','desc'=>'是否之重启TASK'),
+            array('opt'=>'-h,--host','desc'=>'服务监听IP，默认为0.0.0.0'),
+            array('opt'=>'--p,--port','desc'=>'服务监听端口，默认为9051'),
+            array('opt'=>'--only_task','desc'=>'是否仅重启TASK'),
         );
         $io->outPutCmdInfo($info);
     }
@@ -59,7 +60,7 @@ class Info implements ICommand
     public function execute(ICmdIo $io)
     {
         $settingName = Dunce::SETTING_NAME;
-        $services = Dunce::$settingName()->get('Services.service',array());
+        $services = Dunce::$settingName()->get('Services.console',array());
         $argv = $io->getArgv();
         if(empty($argv)) throw new ConsoleException('Command arg is required.');
         $opts = $io->getOpts();
