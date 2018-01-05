@@ -41,7 +41,7 @@ class Info implements ICommand
         $info =  array(
             array('opt'=>'-n,--name','desc'=>'服务名称'),
             array('opt'=>'-h,--host','desc'=>'服务监听IP，默认为0.0.0.0'),
-            array('opt'=>'--p,--port','desc'=>'服务监听端口，默认为9051'),
+            array('opt'=>'--p,--port','desc'=>'服务监听端口，默认为9580'),
             array('opt'=>'--only_task','desc'=>'是否仅重启TASK'),
         );
         $io->outPutCmdInfo($info);
