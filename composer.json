@@ -17,9 +17,6 @@
   },
 
   "autoload": {
-    "par-0" :{
-      "Example\\":"Example/"
-    },
     "psr-4": {
       "Dunces\\":"src/"
     }

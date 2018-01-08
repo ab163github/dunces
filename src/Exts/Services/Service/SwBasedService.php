@@ -6,7 +6,7 @@
  * @copyright Copyright ab163github. All rights reserved.
  */
 
-namespace Dunces\Exts\Services;
+namespace Dunces\Exts\Services\Service;
 
 
 use Dunces\Dunce;
