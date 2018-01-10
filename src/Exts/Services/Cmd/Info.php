@@ -60,7 +60,7 @@ class Info implements ICommand
     public function execute(ICmdIo $io)
     {
         $settingName = Dunce::SETTING_NAME;
-        $services = Dunce::$settingName()->get('Services.console',array());
+        $services = Dunce::$settingName()->get('Services',array());
         $argv = $io->getArgv();
         if(empty($argv)) throw new ConsoleException('Command arg is required.');
         $opts = $io->getOpts();
