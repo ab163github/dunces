@@ -1,6 +1,6 @@
 {
   "name": "ab163github/dunces",
-  "description": "My personal PHP framework",
+  "description": "A loose PHP development framework",
   "license": "MIT",
   "keywords": ["php framework"],
   "version": "0.0.1",
